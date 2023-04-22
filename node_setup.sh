@@ -21,7 +21,7 @@ curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&\
 sudo apt-get install -y nodejs
 
 # install ssb
-sudoe npm install -g npm@9.6.5
+sudo npm install -g npm@9.6.5
 sudo npm install -g ssb-server
 sudo npm install ssb-client
 sudo npm install --save ssb-friends
@@ -31,4 +31,4 @@ sudo npm install --save ssb-db2
 sudo npm install -g sodium-native
 sudo npm audit fix --force
 
-code --install-extension GitHub.copilot
+# code --install-extension GitHub.copilot

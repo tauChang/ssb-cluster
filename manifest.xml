@@ -1,0 +1,65 @@
+<rspec xmlns="http://www.geni.net/resources/rspec/3" xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" xmlns:tour="http://www.protogeni.net/resources/rspec/ext/apt-tour/1" xmlns:jacks="http://www.protogeni.net/resources/rspec/ext/jacks/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.geni.net/resources/rspec/3    http://www.geni.net/resources/rspec/3/request.xsd" type="request">
+  <node xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" client_id="node0" exclusive="true" component_manager_id="urn:publicid:IDN+wisc.cloudlab.us+authority+cm" component_id="urn:publicid:IDN+wisc.cloudlab.us+node+c220g1-030609" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742141">
+    <sliver_type name="raw-pc"/>
+    <interface client_id="node0:eth1" component_id="urn:publicid:IDN+wisc.cloudlab.us+interface+c220g1-030609:eth2" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742145" mac_address="90e2ba876abc">
+      <ip address="10.10.1.1" type="ipv4" netmask="255.255.255.0"/>
+    </interface>
+    <emulab:vnode name="c220g1-030609" hardware_type="c220g1"/>
+    <host name="node0.ssb.advosuwmadison-PG0.wisc.cloudlab.us" ipv4="128.105.145.182"/>
+    <services>
+      <login authentication="ssh-keys" hostname="c220g1-030609.wisc.cloudlab.us" port="22" username="tauchang"/>
+      <emulab:console server="boss.wisc.cloudlab.us"/>
+      <emulab:recovery available="true"/>
+      <emulab:powercycle available="true"/>
+      <emulab:imageable available="true"/>
+    </services>
+  </node>
+  <node xmlns:emulab="http://www.protogeni.net/resources/rspec/ext/emulab/1" client_id="node1" exclusive="true" component_manager_id="urn:publicid:IDN+wisc.cloudlab.us+authority+cm" component_id="urn:publicid:IDN+wisc.cloudlab.us+node+c220g1-030617" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742142">
+    <sliver_type name="raw-pc"/>
+    <interface client_id="node1:eth1" component_id="urn:publicid:IDN+wisc.cloudlab.us+interface+c220g1-030617:eth2" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742146" mac_address="001b216b4a48">
+      <ip address="10.10.1.2" type="ipv4" netmask="255.255.255.0"/>
+    </interface>
+    <emulab:vnode name="c220g1-030617" hardware_type="c220g1"/>
+    <host name="node1.ssb.advosuwmadison-PG0.wisc.cloudlab.us" ipv4="128.105.145.190"/>
+    <services>
+      <login authentication="ssh-keys" hostname="c220g1-030617.wisc.cloudlab.us" port="22" username="tauchang"/>
+      <emulab:console server="boss.wisc.cloudlab.us"/>
+      <emulab:recovery available="true"/>
+      <emulab:powercycle available="true"/>
+      <emulab:imageable available="true"/>
+    </services>
+  </node>
+  <link client_id="link-1" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742144" vlantag="1160">
+    <interface_ref client_id="node0:eth1" component_id="urn:publicid:IDN+wisc.cloudlab.us+interface+c220g1-030609:eth2" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742145"/>
+    <interface_ref client_id="node1:eth1" component_id="urn:publicid:IDN+wisc.cloudlab.us+interface+c220g1-030617:eth2" sliver_id="urn:publicid:IDN+wisc.cloudlab.us+sliver+742146"/>
+    <component_manager name="urn:publicid:IDN+wisc.cloudlab.us+authority+cm"/>
+  </link>
+  <rspec_tour xmlns="http://www.protogeni.net/resources/rspec/ext/apt-tour/1">
+    <description type="markdown">Variable number of nodes in a lan. You have the option of picking from one
+of several standard images we provide, or just use the default (typically a recent
+version of Ubuntu). You may also optionally pick the specific hardware type for
+all the nodes in the lan. </description>
+    <instructions type="markdown">Wait for the experiment to start, and then log into one or more of the nodes
+by clicking on them in the toplogy, and choosing the `shell` menu option.
+Use `sudo` to run root commands. 
+</instructions>
+  </rspec_tour>
+  <data_set xmlns="http://www.protogeni.net/resources/rspec/ext/profile-parameters/1">
+    <data_item name="emulab.net.parameter.linkSpeed">0</data_item>
+    <data_item name="emulab.net.parameter.tempFileSystemSize">0</data_item>
+    <data_item name="emulab.net.parameter.useVMs">False</data_item>
+    <data_item name="emulab.net.parameter.tempFileSystemMax">False</data_item>
+    <data_item name="emulab.net.parameter.tempFileSystemMount">/mydata</data_item>
+    <data_item name="emulab.net.parameter.bestEffort">False</data_item>
+    <data_item name="emulab.net.parameter.phystype"/>
+    <data_item name="emulab.net.parameter.sameSwitch">False</data_item>
+    <data_item name="emulab.net.parameter.osImage">default</data_item>
+    <data_item name="emulab.net.parameter.nodeCount">2</data_item>
+    <data_item name="emulab.net.parameter.startVNC">False</data_item>
+  </data_set>
+  <emulab:portal name="cloudlab" url="https://www.cloudlab.us/status.php?uuid=295424b2-e059-11ed-9f39-e4434b2381fc" project="AdvOSUWMadison" experiment="ssb" sequence="1682090911"/>
+  <rs:site_info xmlns:rs="http://www.protogeni.net/resources/rspec/ext/site-info/1">
+    <rs:location country="US" latitude="43.0667" longitude="89.4000"/>
+  </rs:site_info>
+</rspec>
+
