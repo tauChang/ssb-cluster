@@ -66,11 +66,16 @@ def setup_ssb(ssh_clients):
     for name, client in ssh_clients.items():
         transport = client.get_transport()
         channel = transport.open_session()
+        channel.exec_command("kill -9 $(ps -ef | grep '/usr/bin/ssb-server start' | grep -v grep | awk '{print $2}')")
+
+        channel = transport.open_session()
         channel.exec_command("ssb-server start > /dev/null 2>&1")
         
         # sleep
-        time.sleep(1)
+        print(name)
+        time.sleep(0.5)
         stdin, stdout, stderr = client.exec_command("ssb-server whoami")
+        print(stderr.read().decode('utf-8'))    
         ssb_id = stdout.read().decode('utf-8').split(':')[1].strip().strip('"}').strip("\"\n")
         users[name] = User(name, client, ssb_id)
     return users

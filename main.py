@@ -5,8 +5,10 @@ import time
 import getpass
 from argparse import ArgumentParser
 import pandas as pd
+import threading
 
 from utils import parse_manifest, setup_ssh, setup_node, setup_ssb
+from experiments import hop_expirement
 
 def main():
     parser = ArgumentParser()
@@ -27,16 +29,17 @@ def main():
     # run ssb-server and get their ids
     users = setup_ssb(ssh_clients)
 
-    users["node0"].follow(users["node1"])
-    users["node1"].follow(users["node0"])
-    blobId = users["node0"].publishBlob("file1", 100)
-    users["node1"].createLogStream()
-    users["node1"].wantsBlob(blobId)
-    users["node1"].getsBlob(blobId)
-    users["node0"].whoami()
-    users["node0"].quit()
-    users["node1"].quit()
-    # users["node0"].quit()
+
+    users["node-1"].follow(users["node-0"])
+    users["node-2"].follow(users["node-0"])
+    users["node-3"].follow(users["node-0"])
+    users["node-4"].follow(users["node-0"])
+    users["node-5"].follow(users["node-0"])
+    hop_expirement(users)
+
+
+    for node in users:
+        users[node].quit()
     
 
 if __name__ == "__main__":

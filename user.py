@@ -22,40 +22,70 @@ class User:
         print(f"User {self.name} is unfollowing {user.name}")
         del self.friends[user.ssb_id]
 
-    def post(self, text):
-        self.ssh_client.exec_command(f"ssb-server publish --type post --text {text}")
-        print(f"User {self.name} posted {text}")
+    def post(self, text, link=None):
+        cmd = f"ssb-server publish --type post --text \"{text}\""
+        if link is not None:
+            cmd += f" --mentions.link '{link}'"
+        
+        _, stdout, stderr = self.ssh_client.exec_command(cmd)
+        # print(stderr.read().decode('utf-8'))
+        # print(f"User {self.name} posted {text}")
+        return PostResponse(stdout.read().decode('utf-8'))
+    
+    def createUserStream(self, id, gt):
+        # execute command and print output
+        while 1:
+            stdin, stdout, stderr = self.ssh_client.exec_command(f"ssb-server createUserStream --id {id} --gt {gt}")
+            output = stdout.read().decode('utf-8')
+            if output != "":
+                print(f"User {self.name} saw {output}")
+                break
+        
+    def addBlob(self, filename, bytes):
+        _, _, stderr = self.ssh_client.exec_command(f"dd if=/dev/urandom of={filename} bs={bytes} count=1")
+        stdin, stdout, stderr = self.ssh_client.exec_command(f"cat {filename} | ssb-server blobs.add")
+        blob_id = stdout.read().decode('utf-8').strip()
+        return blob_id
+    
+    def pushBlob(self, blob_id):
+        stdin, stdout, stderr = self.ssh_client.exec_command(f"ssb-server blobs.push \"{blob_id}\"")
+        print(f"User {self.name} pushed blob {blob_id}")
+    
+    def hasBlob(self, blob_id):
+        stdin, stdout, stderr = self.ssh_client.exec_command(f"ssb-server blobs.has \"{blob_id}\"")
+        output = stdout.read().decode('utf-8')
+        return output == "true\n"
+
 
     def publishBlob(self, filename, bytes):
         # create a file that has bytes size
         # add blob
         # post about blob
-        _, _, _ = self.ssh_client.exec_command(f"dd if=/dev/urandom of={filename} bs=1 count={bytes}")
+        _, _, stderr = self.ssh_client.exec_command(f"dd if=/dev/urandom of={filename} bs={bytes} count=1")
         stdin, stdout, stderr = self.ssh_client.exec_command(f"cat {filename} | ssb-server blobs.add")
+        # print(stderr.read().decode('utf-8'))
         blob_id = stdout.read().decode('utf-8').strip()
-        print(f"User {self.name} added blob {blob_id}")
+        # print(f"User {self.name} added blob {blob_id}")
 
-        cmd = "ssb-server publish --type post --text 'checkout this file!'"
-        cmd += f" --mentions.link '{blob_id}'"
+        post = self.post("Hey check out this file!", link=blob_id)
         # cmd += f" --mentions.name '{filename}'"
         # cmd += f" --mentions.size {bytes}"
         # cmd += f" --mentions.type 'text/plain'"
-        stdin, stdout, stderr = self.ssh_client.exec_command(cmd)
-        # print(stdout.read().decode('utf-8'))
         # print(stderr.read().decode('utf-8'))
-        print(f"User {self.name} posted about blob {blob_id}")
+        # print(f"User {self.name} posted about blob {blob_id}")
         
-        return blob_id
+        return blob_id, post
     
     def createLogStream(self):
         stdin, stdout, stderr = self.ssh_client.exec_command(f"ssb-server createLogStream")
-        # print(stdout.read().decode('utf-8'))
+        print(stdout.read().decode('utf-8'))
         print(f"User {self.name} created log stream")
     
     def wantsBlob(self, blob_id):
         # execute command and print output
         stdin, stdout, stderr = self.ssh_client.exec_command(f"ssb-server blobs.want \"{blob_id}\"")
-        # output = stdout.read().decode('utf-8')
+        stdout.read()
+        # print(stderr.read().decode('utf-8'))
         print(f"User {self.name} wants blob {blob_id}")
     
     def getsBlob(self, blob_id):
@@ -77,3 +107,12 @@ class User:
     
     def __str__(self):
         return f"User {self.name} with id {self.ssb_id}"
+    
+class PostResponse():
+    def __init__(self, text):
+        # print("parsing")
+        # print(text)
+        d = json.loads(text)
+        self.key, self.author, self.sequence = d["key"], d["value"]["author"], d["value"]["sequence"]
+    def __str__(self) -> str:
+        return f"PostResponse: key={self.key}, author={self.author}, sequence={self.sequence}"
