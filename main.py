@@ -19,22 +19,19 @@ def main():
     nodes = parse_manifest(args.manifest)
 
     ssh_clients = {}
+    intf_ips = {}
     for node in nodes:
         ssh_clients[node.name] = setup_ssh(node.username, node.hostname)
+        intf_ips[node.name] = node.ips
         print(node.name)
 
     if args.setup_node:
         setup_node(ssh_clients, 'node_setup.sh')
     
     # run ssb-server and get their ids
-    users = setup_ssb(ssh_clients)
+    users = setup_ssb(ssh_clients, intf_ips)
 
 
-    users["node-1"].follow(users["node-0"])
-    users["node-2"].follow(users["node-0"])
-    users["node-3"].follow(users["node-0"])
-    users["node-4"].follow(users["node-0"])
-    users["node-5"].follow(users["node-0"])
     hop_expirement(users)
 
 

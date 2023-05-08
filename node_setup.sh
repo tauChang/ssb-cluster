@@ -14,6 +14,7 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /u
 yes '' | sudo add-apt-repository ppa:git-core/ppa
 sudo apt -y update
 sudo apt -y install git
+sudo apt -y install ifstat
 
 # install npm and nodejs
 sudo apt -y update
